@@ -1,4 +1,4 @@
-const ocha = require('./index')
+const ocha = require('./src/index')
 
 const app = ocha()
 
@@ -9,12 +9,16 @@ app.get('/hello', (req, res) => {
 
 const sayHi = () => console.log('Hi!')
 const sayTest = () => console.log('Test.')
+const printPath = req => console.log(`Path: ${req.path}`)
+const printQuery = req => console.log(`Query: ${JSON.stringify(req.query)}`)
 const home = (req, res) => {
 	res.setHeader('Content-Type', 'application/json')
 	res.end(JSON.stringify({ text: 'Hello world!' }), 'utf8')
 }
 
-app.get('/', sayHi, sayTest, home)
+app.get('/test', sayHi, printPath, printQuery, home)
+
+app.post('/test', sayHi, home)
 
 app.start(3000, err => {
 	if (err) {

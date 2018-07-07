@@ -1,11 +1,7 @@
 const http = require('http')
 
+const { parseUrl } = require('./path')
 
-//const parseQueryString = query_string =>
-const parseUrl = url =>
-	({
-		path: url.split('?')[0]
-	})
 
 module.exports = () => {
 	const route_handlers = []
@@ -22,7 +18,9 @@ module.exports = () => {
 	const post = (path, ...handlers) => handler({ path, method: 'POST' }, handlers)
 
 	const makeRequestHandler = route_handlers => (request, response) => {
-		request.path = parseUrl(request.url).path
+		const { path, query } = parseUrl(request.url)
+		request.path = path
+		request.query = query
 		const { handlers } = route_handlers.find(({ method, path }) => path === request.path && method === request.method)
 		handlers.forEach(h => h(request, response))
 	}

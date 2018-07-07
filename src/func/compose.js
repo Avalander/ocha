@@ -1,0 +1,1 @@
+module.exports = (...fns) => data => fns.reduceRight((prev, fn) => fn(prev), data)
