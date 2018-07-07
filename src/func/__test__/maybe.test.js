@@ -1,6 +1,6 @@
 const test = require('tape')
 
-const { Maybe, Just, Nothing } = require('func/maybe')
+const { Maybe, Just, Nothing, fromNullable } = require('func/maybe')
 
 
 // Just
@@ -79,4 +79,49 @@ test('Nothing.fold should apply the left transformation.', t => {
 		() => t.pass('Invoked left function.'),
 		() => t.fail('Invoked right function instead.')
 	)
+})
+
+
+// fromNullable
+
+test('fromNullable should return Nothing when called with undefined.', t => {
+	t.plan(1)
+
+	const actual = fromNullable(undefined)
+	t.equal(actual.inspect(), 'Nothing()')
+})
+
+test('fromNullable should return Nothing when called with null.', t => {
+	t.plan(1)
+
+	const actual = fromNullable(null)
+	t.equal(actual.inspect(), 'Nothing()')
+})
+
+test('fromNullable should return Just when called with false.', t => {
+	t.plan(1)
+
+	const actual = fromNullable(false)
+	t.equal(actual.inspect(), 'Just(false)')
+})
+
+test('fromNullable should return Just when called with 0.', t => {
+	t.plan(1)
+
+	const actual = fromNullable(0)
+	t.equal(actual.inspect(), 'Just(0)')
+})
+
+test('fromNullable should return Just when called with empty string.', t => {
+	t.plan(1)
+
+	const actual = fromNullable('')
+	t.equal(actual.inspect(), 'Just()')
+})
+
+test('fromNullable should return Just when called with truthy value.', t => {
+	t.plan(1)
+
+	const actual = fromNullable('Twilight Sparkle')
+	t.equal(actual.inspect(), 'Just(Twilight Sparkle)')
 })
