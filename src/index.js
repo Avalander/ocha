@@ -1,30 +1,40 @@
 const http = require('http')
 
-const requestHandler = (req, res) => res.end('Hello world!')
 
-const server = http.createServer(requestHandler)
-server.listen(3000, err => {
-	if (err) return console.error(err)
-	console.log('Server listening on port 3000.')
-})
+//const parseQueryString = query_string =>
+const parseUrl = url =>
+	({
+		path: url.split('?')[0]
+	})
 
-/*
-// content of index.js
-const http = require('http')
-const port = 3000
+module.exports = () => {
+	const route_handlers = []
 
-const requestHandler = (request, response) => {
-  console.log(request.url)
-  response.end('Hello Node.js Server!')
+	const handler = ({ method, path }, handlers) => {
+		route_handlers.push({
+			method,
+			path,
+			handlers
+		})
+	}
+
+	const get = (path, ...handlers) => handler({ path, method: 'GET' }, handlers)
+	const post = (path, ...handlers) => handler({ path, method: 'POST' }, handlers)
+
+	const makeRequestHandler = route_handlers => (request, response) => {
+		request.path = parseUrl(request.url).path
+		const { handlers } = route_handlers.find(({ method, path }) => path === request.path && method === request.method)
+		handlers.forEach(h => h(request, response))
+	}
+
+	const start = (port, callback) => {
+		const server = http.createServer(makeRequestHandler(route_handlers))
+		server.listen(port, callback)
+	}
+
+	return {
+		get,
+		post,
+		start,
+	}
 }
-
-const server = http.createServer(requestHandler)
-
-server.listen(port, (err) => {
-  if (err) {
-    return console.log('something bad happened', err)
-  }
-
-  console.log(`server is listening on ${port}`)
-})
-*/
