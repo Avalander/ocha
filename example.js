@@ -2,23 +2,20 @@ const ocha = require('./src/index')
 
 const app = ocha()
 
-app.get('/hello', (req, res) => {
-	res.setHeader('Content-Type', 'application/json')
-	res.end(JSON.stringify({ text: 'Hello world!' }), 'utf8')
-})
 
 const sayHi = () => console.log('Hi!')
 const sayTest = () => console.log('Test.')
 const printPath = req => console.log(`Path: ${req.path}`)
 const printQuery = req => console.log(`Query: ${JSON.stringify(req.query)}`)
-const home = (req, res) => {
-	res.setHeader('Content-Type', 'application/json')
-	res.end(JSON.stringify({ text: 'Hello world!' }), 'utf8')
-}
+const home = (req, res) => res.setBody('Hello world!')
+
+app.get('/hello', home)
 
 app.get('/test', sayHi, printPath, printQuery, home)
 
 app.post('/test', sayHi, home)
+
+app.get('/echo', printQuery, (req, res) => res.setBody(req.query))
 
 app.start(3000, err => {
 	if (err) {
