@@ -42,7 +42,7 @@ test('Just.fold should apply right transformation.', t => {
 
 	const x = Just(3)
 	x.fold(
-		() => t.fail('Called left transformation instead.'),
+		() => t.fail('Invoked left function instead.'),
 		y => t.equal(y, 3)
 	)
 })
@@ -76,7 +76,7 @@ test('Nothing.fold should apply the left transformation.', t => {
 
 	const x = Nothing()
 	x.fold(
-		() => t.pass(),
-		() => t.fail('Called right transformation instead.')
+		() => t.pass('Invoked left function.'),
+		() => t.fail('Invoked right function instead.')
 	)
 })
